@@ -1,13 +1,13 @@
 #!/bin/bash
 # Patch the kernel for the Intel Realsense library librealsense on a Jetson TX Development Kit
-# Copyright (c) 2016-18 Jetsonhacks 
+# Copyright (c) 2016-18 Jetsonhacks
 # MIT License
 
 
 CLEANUP=true
 
 LIBREALSENSE_DIRECTORY=${HOME}/librealsense
-LIBREALSENSE_VERSION=v2.13.0
+LIBREALSENSE_VERSION=v2.21.0
 
 
 function usage
@@ -49,7 +49,7 @@ set -e
 # Determine the correct kernel version
 # The KERNEL_BUILD_VERSION is the release tag for the JetsonHacks buildKernel repository
 KERNEL_BUILD_VERSION=master
-if [ $JETSON_BOARD == "TX2" ] ; then 
+if [ $JETSON_BOARD == "TX2" ] ; then
 L4TTarget="28.2.1"
   # Test for 28.2.1 first
   if [ $JETSON_L4T = "28.2.1" ] ; then
@@ -62,17 +62,17 @@ L4TTarget="28.2.1"
    echo "==== L4T Kernel Version Mismatch! ============="
    tput sgr0
    echo ""
-   echo "This repository is for modifying the kernel for a L4T "$L4TTarget "system." 
+   echo "This repository is for modifying the kernel for a L4T "$L4TTarget "system."
    echo "You are attempting to modify a L4T "$JETSON_L4T "system."
    echo "The L4T releases must match!"
    echo ""
    echo "There may be versions in the tag/release sections that meet your needs"
    echo ""
    exit 1
-  fi 
+  fi
 fi
 
-if [ $JETSON_BOARD == "TX1" ] ; then 
+if [ $JETSON_BOARD == "TX1" ] ; then
  L4TTarget="28.2"
  if [ $JETSON_L4T = "28.2" ] ; then
      KERNEL_BUILD_VERSION=v1.0-L4T28.2
@@ -82,7 +82,7 @@ if [ $JETSON_BOARD == "TX1" ] ; then
    echo "==== L4T Kernel Version Mismatch! ============="
    tput sgr0
    echo ""
-   echo "This repository is for modifying the kernel for L4T "$L4TTarget "system." 
+   echo "This repository is for modifying the kernel for L4T "$L4TTarget "system."
    echo "You are attempting to modify a L4T "$JETSON_L4T "system."
    echo "The L4T releases must match!"
    echo ""
@@ -120,7 +120,7 @@ if [ ! -d "$LIBREALSENSE_DIRECTORY" ] ; then
          git checkout $LIBREALSENSE_VERSION
      ;;
      * )
-         echo "Kernel patch and build not started"   
+         echo "Kernel patch and build not started"
          exit 1
      ;;
    esac
@@ -146,22 +146,17 @@ fi
 KERNEL_BUILD_DIR=""
 cd $INSTALL_DIR
 echo "Ready to patch and build kernel "$JETSON_BOARD
-if [ $JETSON_BOARD == "TX2" ] ; then 
-  git clone https://github.com/jetsonhacks/buildJetsonTX2Kernel.git
-  KERNEL_BUILD_DIR=buildJetsonTX2Kernel
+if [ $JETSON_BOARD == "TX2" ] ; then
+  git clone https://github.com/earthrover/realsense_buildTX2Kernel
+  KERNEL_BUILD_DIR=realsense_buildTX2Kernel
   cd $KERNEL_BUILD_DIR
   git checkout $KERNEL_BUILD_VERSION
-elif [ $JETSON_BOARD == "TX1" ] ; then
-    git clone https://github.com/jetsonhacks/buildJetsonTX1Kernel.git
-    KERNEL_BUILD_DIR=buildJetsonTX1Kernel
-    cd $KERNEL_BUILD_DIR
-    git checkout $KERNEL_BUILD_VERSION
-  else 
-    tput setaf 1
-    echo "==== Build Issue! ============="
-    tput sgr0
-    echo "There are no build scripts for this Jetson board"
-    exit 1
+else
+  tput setaf 1
+  echo "==== Build Issue! ============="
+  tput sgr0
+  echo "There are no build scripts for this Jetson board"
+  exit 1
 fi
 
 # Get the kernel sources; does not open up editor on .config file
@@ -191,4 +186,3 @@ fi
 
 
 echo "Please reboot for changes to take effect"
-

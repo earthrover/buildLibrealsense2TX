@@ -1,6 +1,6 @@
 #!/bin/bash
 # Builds Cmake on a Jetson TX Development Kit
-# Copyright (c) 2016-18 Jetsonhacks 
+# Copyright (c) 2016-18 Jetsonhacks
 # MIT License
 
 cd ${HOME}
@@ -12,7 +12,7 @@ mv CMake-${CMAKE_VERSION} CMake
 rm v${CMAKE_VERSION}.zip
 cd CMake
 time ./bootstrap
-# Get the number of CPUs 
+# Get the number of CPUs
 NUM_CPU=$(nproc)
 time make -j$(($NUM_CPU - 1))
 if [ $? -eq 0 ] ; then
@@ -23,7 +23,7 @@ else
   echo "CMake did not build " >&2
   echo "Retrying ... "
   # Single thread this time
-  time make 
+  time make
   if [ $? -eq 0 ] ; then
     echo "CMake make successful"
   else
@@ -34,5 +34,4 @@ else
   fi
 fi
 
-
-
+sudo make install

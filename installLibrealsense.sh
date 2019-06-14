@@ -1,13 +1,13 @@
 #!/bin/bash
 # Builds the Intel Realsense library librealsense on a Jetson TX Development Kit
-# Copyright (c) 2016-18 Jetsonhacks 
+# Copyright (c) 2016-18 Jetsonhacks
 # MIT License
 
 # librealsense requires CMake 3.8+ to build; the repositories hold CMake 3.5.1
 # In this script, we build 3.11 but do not install it
 
 LIBREALSENSE_DIRECTORY=${HOME}/librealsense
-LIBREALSENSE_VERSION=v2.13.0
+LIBREALSENSE_VERSION=v2.21.0
 INSTALL_DIR=$PWD
 
 
@@ -46,6 +46,7 @@ echo "Please make sure that no RealSense cameras are currently attached"
 echo ""
 read -n 1 -s -r -p "Press any key to continue"
 echo ""
+
 
 if [ ! -d "$LIBREALSENSE_DIRECTORY" ] ; then
   # clone librealsense
@@ -107,13 +108,13 @@ sudo cp config/99-realsense-libusb.rules /etc/udev/rules.d/
 sudo udevadm control --reload-rules && udevadm trigger
 
 # Now compile librealsense and install
-mkdir build 
+mkdir build
 cd build
 # Build examples, including graphical ones
 echo "${green}Configuring Make system${reset}"
 # Use the CMake version that we built, must be > 3.8
 # Build with CUDA (default), the CUDA flag is USE_CUDA, ie -DUSE_CUDA=true
-${HOME}/CMake/bin/cmake ../ -DBUILD_EXAMPLES=true -DBUILD_WITH_CUDA=true
+${HOME}/CMake/bin/cmake ../ -DBUILD_EXAMPLES=true -DBUILD_WITH_CUDA=true -DCMAKE_BUILD_TYPE=Release
 # The library will be installed in /usr/local/lib, header files in /usr/local/include
 # The demos, tutorials and tests will located in /usr/local/bin.
 echo "${green}Building librealsense, headers, tools and demos${reset}"
@@ -128,7 +129,7 @@ else
   echo "librealsense did not build " >&2
   echo "Retrying ... "
   # Single thread this time
-  time make 
+  time make
   if [ $? -eq 0 ] ; then
     echo "librealsense make successful"
   else
@@ -149,6 +150,3 @@ echo "The demos and tools are located in /usr/local/bin"
 echo " "
 echo " -----------------------------------------"
 echo " "
-
-
-
