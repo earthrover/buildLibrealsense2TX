@@ -4,7 +4,7 @@
 # MIT License
 
 
-CLEANUP=true
+CLEANUP=false
 
 LIBREALSENSE_DIRECTORY=${HOME}/librealsense
 LIBREALSENSE_VERSION=v2.21.0
@@ -20,7 +20,7 @@ function usage
 # Iterate through command line inputs
 while [ "$1" != "" ]; do
     case $1 in
-        -n | --nocleanup )      CLEANUP=false
+        --cleanup )             CLEANUP=true
                                 ;;
         -h | --help )           usage
                                 exit

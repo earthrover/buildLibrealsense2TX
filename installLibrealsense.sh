@@ -15,7 +15,7 @@ BUILD_CMAKE=true
 
 function usage
 {
-    echo "usage: ./installLibrealsense.sh [[-c ] | [-h]]"
+    echo "usage: ./installLibrealsense.sh [[-n ] | [-h]]"
     echo "-n | --no_cmake   Do not build CMake 3.11"
     echo "-h | --help  This message"
 }
@@ -113,6 +113,10 @@ cd build
 # Build examples, including graphical ones
 echo "${green}Configuring Make system${reset}"
 # Use the CMake version that we built, must be > 3.8
+# Add address to CUDA compiler: 'whereis nvcc'
+if [[ -z "${CUDACXX}" ]]; then
+  sudo sed -i '$ a CUDACXX=/usr/local/cuda-9.0/bin/nvcc' /etc/environment
+fi
 # Build with CUDA (default), the CUDA flag is USE_CUDA, ie -DUSE_CUDA=true
 ${HOME}/CMake/bin/cmake ../ -DBUILD_EXAMPLES=true -DBUILD_WITH_CUDA=true -DCMAKE_BUILD_TYPE=Release
 # The library will be installed in /usr/local/lib, header files in /usr/local/include
